@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Game Interface</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMtdOMszQDpZB+LQ1W4Z8sOBp1GxL54I4R0" crossorigin="anonymous">
+    <style>
+        body {
+            background: url('A_mythical_book.png') no-repeat center center fixed;
+            background-size: cover;
+            color: white; /* Adjusted for visibility against the background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            padding-bottom: 80px; /* To accommodate bottom navbar */
+        }
+
+       /* Import a stylish font from Google Fonts or another source */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+.header {
+    position: fixed; /* Fixed position to keep it at the top */
+    top: 0; /* Align to the top of the viewport */
+    left: 0; /* Align to the left edge */
+    width: 100%; /* Full width of the viewport */
+    background-color: #333; /* Background color for contrast */
+    color: white; /* White text color */
+    font-weight: bold; /* Make text bold */
+    font-size: 2rem; /* Adjust font size as needed */
+    text-align: center; /* Center the text horizontally */
+    padding: 10px; /* Padding inside the header */
+    z-index: 1000; /* Ensure it stays on top of other content */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for depth */
+}
+
+/* Optional: Adjust for responsive design */
+@media (max-width: 768px) {
+    .header {
+        font-size: 1.5rem; /* Adjust font size for smaller screens */
+        padding: 8px; /* Adjust padding for smaller screens */
+    }
+}
+
+
+/* Glowing text effect */
+.header::before {
+    content: ''; /* Necessary for pseudo-element */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
+    filter: blur(10px); /* Blur the gradient to create a glow effect */
+    z-index: -1; /* Place the pseudo-element behind the text */
+}
+
+.header {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6); /* Glowing effect */
+}
+
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: rgba(31, 31, 31, 0.8); /* Dark transparent background for cards */
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: deepskyblue; /* Green color for headers */
+            color: white;
+            text-align: center;
+            border-radius: 15px 15px 0 0;
+            font-size: 18px;
+            padding: 10px;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .balance-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .balance-section button {
+            margin-left: 10px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            justify-items: center;
+            align-items: center;
+        }
+
+        .game-box {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .game-box img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-box:hover {
+            transform: scale(1.05);
+        }
+
+        .stars-section {
+            margin-top: 20px;
+        }
+
+        .stars-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .stars-list li {
+            padding: 10px;
+            background-color: #333; /* Darker background for list items */
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stars-list li .task-name {
+            font-size: 14px;
+        }
+
+        .stars-list li .task-action {
+            font-size: 14px;
+            font-weight: bold;
+            color: deepskyblue; /* Green color for actions */
+            cursor: pointer;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: deepskyblue; /* Green color for bottom nav */
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+
+        .bottom-nav button {
+            font-size: 18px;
+            color: white;
+            background-color: deepskyblue; /* Green color for buttons */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            transition: background-color 0.3s ease;
+        }
+
+        .bottom-nav button:hover {
+            background-color: deepskyblue; /* Darker green on hover */
+        }
+
+        @media (max-width: 768px) {
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bottom-nav button {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns */
+            grid-template-rows: auto auto auto; /* Three rows (top, middle, bottom) */
+            gap: 16px; /* Space between grid items */
+            max-width: 1000px; /* Optional: set max-width for better control on larger screens */
+            margin: 0 auto; /* Center the grid container */
+        }
+        
+        .game-box {
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .game-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Desktop layout for larger screens */
+        .game-grid .game-box:nth-child(1) { grid-row: 1; grid-column: 1; } /* Top-left */
+        .game-grid .game-box:nth-child(2) { grid-row: 1; grid-column: 2; } /* Top-right */
+        .game-grid .game-box:nth-child(3) { grid-row: 2; grid-column: 1 / span 2; } /* Middle, spanning both columns */
+        .game-grid .game-box:nth-child(4) { grid-row: 3; grid-column: 1; } /* Bottom-left */
+        .game-grid .game-box:nth-child(5) { grid-row: 3; grid-column: 2; } /* Bottom-right */
+        
+        /* Responsive styles for mobile */
+        @media (max-width: 768px) {
+            .game-grid {
+                grid-template-columns: repeat(2, 1fr); /* Two columns on mobile */
+                grid-template-rows: auto auto auto auto; /* Four rows (two at the top, one in the middle, two at the bottom) */
+                gap: 8px; /* Reduced gap for smaller screens */
+            }
+        
+            .game-grid .game-box:nth-child(1) { grid-row: 1; grid-column: 1; } /* Top-left */
+            .game-grid .game-box:nth-child(2) { grid-row: 1; grid-column: 2; } /* Top-right */
+            .game-grid .game-box:nth-child(3) { grid-row: 2; grid-column: 1; } /* Middle-left */
+            .game-grid .game-box:nth-child(4) { grid-row: 2; grid-column: 2; } /* Middle-right */
+            .game-grid .game-box:nth-child(5) { grid-row: 3; grid-column: 1 / span 2; } /* Bottom, spanning both columns */
+        }
+        
+        .balance-actions {
+            display: flex; /* Enable Flexbox layout */
+            justify-content: center; /* Center items horizontally */
+            align-items: center; /* Center items vertically (optional) */
+            gap: 10px; /* Space between buttons */
+        }
+        
+        /* Optional: Button styling for visual appeal */
+        .btn {
+            padding: 10px 20px; /* Add padding inside buttons */
+            border-radius: 4px; /* Rounded corners */
+            font-size: 0.875rem; /* Font size for buttons */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+        
+        /* Button color and style */
+        .btn-primary {
+            background-color: #007bff; /* Primary button color */
+            color: #fff; /* White text color */
+            border: none; /* Remove default border */
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d; /* Secondary button color */
+            color: #fff; /* White text color */
+            border: none; /* Remove default border */
+        }
+        
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Header Section -->
+        <div class="header">
+            P9 Betting Game Bot
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profileSection" class="card">
+            <div class="card-header">
+                Profile
+            </div>
+            <div class="card-body">
+                <h5>User Name</h5>
+                <p>Username: <strong id="username">@username</strong></p>
+                <!-- <p>Registered on: <strong>Date</strong></p> -->
+            </div>
+        </div>
+
+        <!-- Balance Section -->
+        <div class="card">
+            <div class="card-header">
+                Toncoin Balance
+            </div>
+            <div class="card-body balance-section">
+                <div class="balance-info">
+                    <p class="card-text">Toncoin Balance: <strong id="balance">100.00 TON</strong></p>
+                    <p class="card-text">Reward Balance: <strong id="rewardBalance">1.00 TON</strong></p>
+                </div>
+                <div class="balance-actions">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="updateBalance(10, 'main')">Deposit</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="updateBalance(-10, 'main')">Withdraw</button>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Deposit Options -->
+        <div class="card">
+            <div class="card-header">
+                Deposit Options
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-primary btn-lg w-100 mb-2" onclick="deposit('@wallet')">Deposit via @wallet</button>
+                <button type="button" class="btn btn-primary btn-lg w-100 mb-2" onclick="deposit('Tonkeeper')">Deposit via Tonkeeper Wallet</button>
+                <button type="button" class="btn btn-primary btn-lg w-100 mb-2" onclick="deposit('Telegram Stars')">Deposit via Telegram Stars</button>
+            </div>
+        </div>
+
+        <!-- Games Section -->
+        <div id="gamesSection" class="card">
+            <div class="card-header">
+                Games
+            </div>
+            <div class="card-body">
+                <div class="game-grid">
+                    <div class="game-box">
+                        <img src="Designer (3).jpeg" alt="Game 1">
+                    </div>
+                    <div class="game-box">
+                        <img src="Designer (1).jpeg" alt="Game 2">
+                    </div>
+                    <div class="game-box">
+                        <img src="Gemini_Generated_Image_o9mc3lo9mc3lo9mc.jfif" alt="Game 3">
+                    </div>
+                    <div class="game-box">
+                        <img src="Gemini_Generated_Image_o9mc3lo9mc3lo9mc.jfif" alt="Game 4">
+                    </div>
+                    <div class="game-box">
+                        <img src="Designer (3).jpeg" alt="Game 5">
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+        </div>
+
+        <!-- Earn Section -->
+        <div id="earnSection" class="card stars-section">
+            <div class="card-header">
+                Earn Tasks
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="task-name" style="color: white; font-weight: bold; font-style: italic;"><i class="fas fa-star"></i> Refer a friend</span>
+                            <button class="btn btn-primary btn-lg" onclick="claimTask('task2')">Claim</button>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="task-name" style="color: white; font-weight: bold; font-style: italic;"><i class="fas fa-star"></i> Play 5 games</span>
+                            <button class="btn btn-primary btn-lg" onclick="claimTask('task3')">Claim</button>
+                        </div>
+                    </li>
+                    <!-- Additional Tasks -->
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="task-name" style="color: white; font-weight: bold; font-style: italic;"><i class="fas fa-star"></i> Invite 10 friends</span>
+                            <button class="btn btn-primary btn-lg" onclick="claimTask('task4')">Claim</button>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="task-name" style="color: white; font-weight: bold; font-style: italic;"><i class="fas fa-star"></i> Share on story</span>
+                            <button class="btn btn-primary btn-lg" onclick="claimTask('task5')">Claim</button>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="task-name" style="color: white; font-weight: bold; font-style: italic;"><i class="fas fa-star"></i> Bet 3 times in any games</span>
+                            <button class="btn btn-primary btn-lg" onclick="claimTask('task6')">Claim</button>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="task-name" style="color: white; font-weight: bold; font-style: italic;"><i class="fas fa-star"></i> Boost our official channel</span>
+                            <button class="btn btn-primary btn-lg" onclick="claimTask('task7')">Claim</button>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="task-name" style="color: white; font-weight: bold; font-style: italic;"><i class="fas fa-star"></i> Join our official channel</span>
+                            <button class="btn btn-primary btn-lg" onclick="claimTask('task8')">Claim</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div id="leaderboardSection" class="card" style="display: none;">
+            <div class="card-header">
+                Leaderboard
+            </div>
+            <div class="card-body">
+                <p>Top players will be listed here.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <button onclick="showSection('profileSection')">Profile</button>
+        <button onclick="showSection('gamesSection')">Games</button>
+        <button onclick="showSection('earnSection')">Earn</button>
+        <button onclick="showSection('leaderboardSection')">Leaderboard</button>
+    </div>
+
+    <script>
+        const usernameElement = document.getElementById('username');
+        usernameElement.innerText = '@exampleUser';  // Replace with dynamic username fetching
+
+        const balanceElement = document.getElementById('balance');
+        const rewardBalanceElement = document.getElementById('rewardBalance');
+
+        function updateBalance(amount, type) {
+            let currentBalance;
+            if (type === 'main') {
+                currentBalance = parseFloat(balanceElement.innerText);
+                currentBalance += amount;
+                balanceElement.innerText = currentBalance.toFixed(2) + ' TON';
+            } else if (type === 'reward') {
+                currentBalance = parseFloat(rewardBalanceElement.innerText);
+                currentBalance += amount;
+                rewardBalanceElement.innerText = currentBalance.toFixed(2) + ' TON';
+            }
+            alert(`Your ${type} balance has been updated by ${amount} TON`);
+        }
+
+        function claimTask(taskId) {
+            let taskElement = document.querySelector(`[onclick="claimTask('${taskId}')"]`);
+            if (!taskElement.classList.contains('disabled-task')) {
+                alert(`Claiming task: ${taskId}`);
+                taskElement.innerText = 'Claimed';
+                taskElement.classList.add('disabled-task'); // Disable the current task after claiming
+
+                // Enable the next task
+                let nextTask = taskElement.parentElement.nextElementSibling?.querySelector('.task-action');
+                if (nextTask) {
+                    nextTask.classList.remove('disabled-task');
+                }
+
+                updateBalance(0.1, 'reward'); // Example: add to reward balance upon claiming
+            } else {
+                alert('Please complete the previous task first.');
+            }
+        }
+
+        function showSection(sectionId) {
+            document.getElementById('profileSection').style.display = 'none';
+            document.getElementById('gamesSection').style.display = 'none';
+            document.getElementById('earnSection').style.display = 'none';
+            document.getElementById('leaderboardSection').style.display = 'none';
+
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function deposit(method) {
+            alert(`Depositing via ${method}`);
+            // Implement deposit functionality as needed
+        }
+
+        // Initialize reward balance
+        rewardBalanceElement.innerText = '1.00 TON'; // Example initial reward balance
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
